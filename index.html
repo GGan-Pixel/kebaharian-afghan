@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kebaharian IoT — Dashboard</title>
+  <style>
+    :root{--bg:#0b1220;--card:#0f1724;--muted:#9aa4b2;--accent:#f6c64a}
+    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{margin:0;background:linear-gradient(180deg,#061018 0%, #071428 100%);color:#e6eef6}
+    .container{max-width:1100px;margin:28px auto;padding:20px}
+    /* header{display:flex;align-items:center;justify-content:space-between;gap:12px} */
+    h1{margin:0;font-size:28px}
+    p.lead{margin:4px 0 0;color:var(--muted)}
+    header{background:#0f1724;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 10px rgba(0,0,0,.4)}
+    nav a{color:var(--muted);text-decoration:none;margin:0 10px;padding:6px 14px;border-radius:8px;transition:0.3s}
+    nav a.active, nav a:hover{background:#1f2937;color:#fff}
+
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:18px;margin-top:18px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr;}}
+
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(3,6,12,.6)}
+
+    /* left main card */
+    .main-top{display:flex;justify-content:space-between;align-items:center}
+    .current{display:flex;gap:18px;align-items:center}
+    .temp-big{font-size:64px;font-weight:700;line-height:1}
+    .meta{color:var(--muted)}
+
+    /* small stats */
+    .stats{display:flex;gap:12px;margin-top:14px}
+    .stat{background:rgba(255,255,255,.03);padding:10px;border-radius:8px;min-width:120px}
+    .stat h4{margin:0;font-size:14px}
+    .stat p{margin:6px 0 0;color:var(--muted)}
+
+    /* chart */
+    .chart-wrap{margin-top:16px}
+    .chart {width:100%;height:170px;background:linear-gradient(180deg,rgba(246,198,74,.02),transparent);border-radius:8px;padding:10px}
+
+    /* forecast */
+    .week{display:flex;gap:8px;margin-top:12px}
+    .day{flex:1;text-align:center;padding:10px;border-radius:8px;background:rgba(255,255,255,.02)}
+    .day small{display:block;color:var(--muted)}
+
+    /* right column */
+    .right .card{margin-bottom:12px}
+    .meta-block{display:flex;justify-content:space-between;align-items:center}
+    .small-note{color:var(--muted);font-size:13px;margin-top:8px}
+
+    footer{color:var(--muted);font-size:13px;margin-top:18px;text-align:center}
+
+    /* tiny sparkle */
+    .badge{background:rgba(246,198,74,.12);color:#ffd98a;padding:6px 10px;border-radius:999px;font-weight:600}
+  </style>
+</head>
+<body>
+  <!-- ✅ Navbar sama seperti contoh pertama -->
+  <header>
+    <h3>Kebaharian IoT</h3>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>🌤️ Dashboard Kebaharian IoT</h1>
+    <p class="lead">Sistem Monitoring Suhu & Kelembaban untuk mendukung pengelolaan kebaharian secara real-time</p>
+
+    <section class="grid">
+      <div>
+        <div class="card">
+          <div class="main-top">
+            <div class="current">
+              <div>
+                <div class="temp-big" id="temp">28°C</div>
+                <div class="meta" id="desc">Cloudy — Senin 07.00</div>
+              </div>
+            </div>
+            <div style="text-align:right">
+              <svg width="88" height="68" viewBox="0 0 64 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 40h24a10 10 0 0 0 0-20 14 14 0 0 0-26-2A8 8 0 0 0 8 36h2"
+                      stroke="#cfd9e6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><h4>Suhu</h4><p id="stat-temp">28 °C</p></div>
+            <div class="stat"><h4>Kelembaban</h4><p id="stat-hum">81 %</p></div>
+            <div class="stat"><h4>Angin</h4><p id="stat-wind">5 km/h</p></div>
+          </div>
+
+          <div class="chart-wrap">
+            <h4 style="margin:8px 0 6px">Perubahan Suhu Hari Ini</h4>
+            <div class="chart" aria-hidden>
+              <svg id="tempChart" width="100%" height="150" viewBox="0 0 800 150" preserveAspectRatio="none"></svg>
+            </div>
+            <div class="small-note">Data contoh. Ganti sumber data JS ke endpoint API IoT Anda untuk tampilan live.</div>
+          </div>
+
+          <div class="week">
+            <div class="day"><strong>Sen</strong><small>33° / 26°</small></div>
+            <div class="day"><strong>Sel</strong><small>33° / 26°</small></div>
+            <div class="day"><strong>Rab</strong><small>32° / 26°</small></div>
+            <div class="day"><strong>Kam</strong><small>34° / 26°</small></div>
+            <div class="day"><strong>Jum</strong><small>32° / 26°</small></div>
+            <div class="day"><strong>Sab</strong><small>32° / 26°</small></div>
+            <div class="day"><strong>Min</strong><small>32° / 26°</small></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px">
+          <h4>Catatan Sistem</h4>
+          <p class="small-note">Dashboard ini menampilkan suhu, kelembaban, dan metrik cuaca lain yang berguna untuk pengelolaan kebaharian. Integrasikan perangkat sensor dengan endpoint WebSocket / REST untuk data real-time.</p>
+        </div>
+      </div>
+
+      <aside class="right">
+        <div class="card">
+          <div class="meta-block">
+            <div>
+              <h3 style="margin:0">Status Sensor</h3>
+              <p class="small-note">Semua node: 12 aktif • 2 menunggu</p>
+            </div>
+            <div><strong id="uptime">Uptime 99.2%</strong></div>
+          </div>
+          <div style="margin-top:12px">
+            <h4>Parameter Terakhir</h4>
+            <p class="small-note">T: <span id="last-t">28°C</span> • H: <span id="last-h">81%</span> • pH: <span id="last-ph">7.4</span></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>Alarm & Aksi</h4>
+          <p class="small-note">Tidak ada alarm kritis. Konsol kontrol manual tersedia untuk mengaktifkan pompa dan aerator.</p>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button onclick="simulateAction('pompa')" style="flex:1;padding:10px;border-radius:8px;border:0;background:#0ea5a4;color:#021018;cursor:pointer">Aktifkan Pompa</button>
+            <button onclick="simulateAction('aerator')" style="flex:1;padding:10px;border-radius:8px;border:0;background:#f59e0b;color:#021018;cursor:pointer">Aktifkan Aerator</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4>Integrasi</h4>
+          <p class="small-note">Endpoint REST: <code>/api/sensors</code> • WebSocket: <code>wss://kebaharian.example/ws</code></p>
+        </div>
+      </aside>
+    </section>
+
+    <footer>© Kebaharian IoT — Sistem Monitoring Suhu & Kelembaban</footer>
+  </div>
+
+  <script>
+    // contoh data (jam, suhu)
+    const hourly = [
+      ['08.00',28],['11.00',31],['14.00',33],['17.00',30],['20.00',27],['23.00',27],['02.00',26],['05.00',27]
+    ];
+
+    function drawChart() {
+      const svg = document.getElementById('tempChart');
+      const w = svg.viewBox.baseVal.width || 800;
+      const h = svg.viewBox.baseVal.height || 150;
+      svg.innerHTML = '';
+
+      const padding = 30;
+      const innerW = w - padding*2;
+      const innerH = h - padding*2;
+
+      const temps = hourly.map(d=>d[1]);
+      const minT = Math.min(...temps) - 2;
+      const maxT = Math.max(...temps) + 2;
+
+      // axes lines (bottom labels)
+      hourly.forEach((d,i)=>{
+        const x = padding + (i/(hourly.length-1))*innerW;
+        const label = document.createElementNS('http://www.w3.org/2000/svg','text');
+        label.setAttribute('x',x);
+        label.setAttribute('y',h-6);
+        label.setAttribute('text-anchor','middle');
+        label.setAttribute('font-size','11');
+        label.setAttribute('fill','#9aa4b2');
+        label.textContent = d[0];
+        svg.appendChild(label);
+      });
+
+      // polyline points
+      const points = hourly.map((d,i)=>{
+        const x = padding + (i/(hourly.length-1))*innerW;
+        const y = padding + ((maxT - d[1])/(maxT - minT))*innerH;
+        return x + ',' + y;
+      }).join(' ');
+
+      const poly = document.createElementNS('http://www.w3.org/2000/svg','polyline');
+      poly.setAttribute('points',points);
+      poly.setAttribute('fill','none');
+      poly.setAttribute('stroke','#f6c64a');
+      poly.setAttribute('stroke-width','3');
+      poly.setAttribute('stroke-linecap','round');
+      svg.appendChild(poly);
+
+      // area under curve
+      const areaPoints = 'M ' + points.split(' ').map((p,i)=>p).join(' L ') + ' L ' + (padding+innerW) + ',' + (h-padding) + ' ' + padding + ',' + (h-padding);
+      const area = document.createElementNS('http://www.w3.org/2000/svg','path');
+      area.setAttribute('d',areaPoints);
+      area.setAttribute('fill','rgba(246,198,74,0.06)');
+      svg.insertBefore(area,poly);
+
+      // dots and tooltip behavior
+      hourly.forEach((d,i)=>{
+        const x = padding + (i/(hourly.length-1))*innerW;
+        const y = padding + ((maxT - d[1])/(maxT - minT))*innerH;
+        const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        dot.setAttribute('cx',x);
+        dot.setAttribute('cy',y);
+        dot.setAttribute('r',4);
+        dot.setAttribute('fill','#fff');
+        dot.setAttribute('opacity','0.95');
+        svg.appendChild(dot);
+
+        const lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
+        lbl.setAttribute('x',x);
+        lbl.setAttribute('y',y-10);
+        lbl.setAttribute('text-anchor','middle');
+        lbl.setAttribute('font-size','12');
+        lbl.setAttribute('fill','#f6c64a');
+        lbl.textContent = d[1] + '°C';
+        svg.appendChild(lbl);
+      });
+    }
+
+    // initialize
+    document.getElementById('temp').textContent = hourly[0][1] + '°C';
+    document.getElementById('stat-temp').textContent = hourly[0][1] + ' °C';
+    drawChart();
+
+    // simulate live updates (for demo). Replace with WebSocket/Fetch to real API.
+    setInterval(()=>{
+      // random tiny variation
+      const last = hourly[hourly.length-1][1];
+      const next = Math.round((last + (Math.random()*2-1))*1)/1;
+      hourly.shift();
+      const now = new Date();
+      const label = (now.getHours()<10? '0'+now.getHours():now.getHours()) + ':' + (now.getMinutes()<10? '0'+now.getMinutes():now.getMinutes());
+      hourly.push([label, next]);
+
+      // update UI values
+      const current = next;
+      document.getElementById('temp').textContent = current + '°C';
+      document.getElementById('stat-temp').textContent = current + ' °C';
+      document.getElementById('stat-hum').textContent = 78 + Math.floor(Math.random()*6) + ' %';
+      document.getElementById('stat-wind').textContent = 4 + Math.floor(Math.random()*5) + ' km/h';
+      document.getElementById('last-t').textContent = current + '°C';
+      document.getElementById('last-h').textContent = 78 + Math.floor(Math.random()*6) + '%';
+      document.getElementById('last-ph').textContent = (7 + Math.random()*0.6).toFixed(1);
+      drawChart();
+    }, 8000);
+
+    function simulateAction(name){
+      alert('Perintah dikirim ke perangkat: ' + name);
+    }
+  </script>
+</body>
+</html>
+
